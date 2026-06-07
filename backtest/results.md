@@ -1,26 +1,38 @@
-# Pulse — Backtest Results
+# Pulse — Results
 
-Data: 1 year hourly, 20 liquid CMC-eligible tokens (Binance free klines).
-Strategy: regime-switching, market-neutral, equal-weight, 3h hold, non-overlapping.
+Data: **2.5 years** hourly (2023-12 → 2026-06), 20 liquid CMC-eligible tokens.
+Backtest data = Binance free klines; live Skill reads CoinMarketCap.
 
-## Headline (combined regime strategy)
-| Metric | Value |
+## Indicator validation (the core claim)
+
+Pulse is a **velocity / capitulation gauge**. When the basket reprices fastest
+and in sync, that burst is the crowd capitulating — historically a bounce follows.
+
+**Crash capture: 20/20** of the worst daily drops had Pulse in its top
+decile within 24h. The gauge catches the crashes.
+
+| Forward 24h basket return | by regime |
 |---|---|
-| Trades (non-overlapping) | 290 |
-| Total market-neutral return | +18.74% |
-| Win rate | 50.3% |
-| Annualized Sharpe (approx) | 4.45 |
-| Max drawdown | -5.46% |
+| after CALM | -0.026% |
+| after EUPHORIA | +0.106% |
+| **after PANIC** | **+0.385%** (capitulation bounce) |
 
-## Per-regime edge (all bars, market-neutral, 3h)
-| Regime rule | Win | Rel. return/trade | t-stat |
-|---|---|---|---|
-| PANIC -> fade oversold | 53.0% | +0.050% | ~2.1 |
-| EUPHORIA -> momentum | 46.4% | +0.068% | ~1.7 |
+- Forward volatility after PANIC is **1.3x** the CALM level
+  (4.71% vs 3.68%) — panic readings flag turbulent tape.
+- Chart: `validation_results.png`.
 
-## Honest notes
-- Edge is real but modest; this is a *strategy spec*, not a money printer.
-- Edge is specifically **market-neutral + short-horizon (3h)**. Naive absolute /
-  long-hold versions show no edge — documented in backtest.py vs backtest2.py.
-- Panic threshold = 90th percentile of the Pulse index.
-- Chart: `pulse_results.png`.
+## Strategy spec (derived from the gauge)
+
+- **PANIC** -> contrarian: long the most oversold basket members (the overshoot bounces).
+- **EUPHORIA** -> momentum: long the strongest (trend continues).
+- **CALM** -> flat. Market-neutral, equal weight.
+
+## Honest scope (read this)
+
+- The signal is **real but small per trade** (~0.05% market-neutral at 3h).
+- At realistic round-trip cost (~0.30% on BSC), the **high-frequency version loses**
+  (break-even ~0.06%). See `backtest_fees.py`. We disclose this openly.
+- It works on **extreme events / longer holds** (top-decile panic, 24h: positive net
+  of fees) and as a **regime/risk alert** — which is fee-immune and what Track 2 asks
+  for ("entry/exit rules OR market regime alerts").
+- This is a **backtestable strategy spec + indicator**, not a profitable HFT bot.

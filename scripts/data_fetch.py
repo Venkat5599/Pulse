@@ -22,7 +22,7 @@ BASKET = [
 ]
 
 INTERVAL = "1h"
-DAYS = 365                      # how much history
+DAYS = 900                      # ~2.5y: spans bull + bear so the overlay shows both sides
 BINANCE = "https://api.binance.com/api/v3/klines"
 OUT_DIR = Path(__file__).resolve().parents[1] / "data"
 

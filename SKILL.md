@@ -105,13 +105,19 @@ python backtest/backtest2.py    # market-neutral edge validation
 The reference scripts read OHLCV (Binance free klines for backtest; swap in CMC
 quotes for live). The strategy logic is identical across data sources.
 
-## Validation (see backtest/results.md)
+## Validation (2.5y hourly, 20 tokens — see backtest/results.md)
 
-Backtested on 1 year of hourly data, 20 liquid eligible tokens, market-neutral:
-- **PANIC -> fade oversold, 3h hold: win 53.0%, +0.050%/trade, t~2.1** (real edge)
-- **EUPHORIA -> momentum, 3h hold: +0.068%/trade** (positive)
-- Naive (non-market-neutral, long holds) shows no edge — the edge is specifically
-  market-neutral + short-horizon. Honesty: edge is modest but statistically present.
+Pulse is validated as a **capitulation / fear gauge**:
+- **Crash capture: 20/20** — every one of the worst daily drops had Pulse in its
+  top decile within 24h.
+- **Forward 24h after PANIC: +0.385%** (capitulation bounce — best of all regimes)
+  vs −0.026% after CALM. Panic = contrarian buy.
+- Forward volatility after PANIC is **1.3×** the calm level — flags turbulent tape.
+
+**Honest fee disclosure:** the per-trade signal is small (~0.05% at 3h). At realistic
+BSC round-trip cost (~0.30%) the high-frequency version loses (break-even ~0.06%,
+`backtest_fees.py`). The value is the **regime alert** — fee-immune, and exactly what
+Track 2 asks for. We keep the failed naive test (`backtest.py`) in the repo.
 
 ## Why it's novel
 

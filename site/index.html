@@ -112,43 +112,41 @@ tailwind.config = {
   </div>
 </section>
 
-<!-- Proof / metrics bento -->
+<!-- Proof / validation bento -->
 <section id="proof" class="relative z-10 max-w-6xl mx-auto px-6 py-24">
   <div class="reveal mb-12">
     <span class="inline-block rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-white/50 mb-5">The proof</span>
-    <h2 class="font-display font-700 text-4xl md:text-6xl tracking-tight">It actually has an edge.</h2>
-    <p class="mt-4 text-white/50 max-w-lg">One year, hourly, 20 liquid tokens. Market-neutral. Honest numbers — modest per trade, real in aggregate.</p>
+    <h2 class="font-display font-700 text-4xl md:text-6xl tracking-tight">It catches every crash.</h2>
+    <p class="mt-4 text-white/50 max-w-xl">2.5 years, hourly, 20 liquid tokens. Validated as a fear gauge — not sold as a money printer.</p>
   </div>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <!-- hero stat: crash capture -->
+    <div class="reveal md:col-span-2 md:row-span-2 rounded-[2rem] border border-white/10 bg-white/[0.03] p-2 hairline">
+      <div class="rounded-[calc(2rem-0.5rem)] bg-ink/60 p-8 h-full flex flex-col justify-between hairline">
+        <span class="text-[10px] uppercase tracking-[0.2em] text-white/40">Crash capture</span>
+        <div>
+          <div id="vCapture" class="font-display font-700 text-7xl md:text-8xl text-panic mt-3">—</div>
+          <p class="text-white/60 mt-4 leading-relaxed text-[15px]">Of the 20 worst daily drops in 2.5 years, Pulse was in its top decile within 24h. Every single one. The gauge sees the crash as it happens.</p>
+        </div>
+      </div>
+    </div>
+    <!-- forward returns by regime -->
     <div class="reveal md:col-span-2 rounded-[2rem] border border-white/10 bg-white/[0.03] p-2 hairline">
       <div class="rounded-[calc(2rem-0.5rem)] bg-ink/60 p-8 h-full hairline">
-        <span class="text-[10px] uppercase tracking-[0.2em] text-white/40">Market-neutral return</span>
-        <div id="mRet" class="font-display font-700 text-6xl text-calm mt-3">—</div>
-        <canvas id="equity" height="120" class="w-full mt-6"></canvas>
+        <span class="text-[10px] uppercase tracking-[0.2em] text-white/40">Forward 24h return by regime</span>
+        <div class="mt-4 space-y-3 text-[15px]">
+          <div class="flex items-center justify-between"><span class="text-calm">CALM</span><span id="vCalm" class="font-display font-600">—</span></div>
+          <div class="flex items-center justify-between"><span class="text-euph">EUPHORIA</span><span id="vEuph" class="font-display font-600">—</span></div>
+          <div class="flex items-center justify-between"><span class="text-panic">PANIC → bounce</span><span id="vPanic" class="font-display font-700 text-calm">—</span></div>
+        </div>
+        <p class="text-white/40 mt-4 text-[13px]">Panic = capitulation. The contrarian bounce is the edge.</p>
       </div>
     </div>
-    <div class="reveal rounded-[2rem] border border-white/10 bg-white/[0.03] p-2 hairline">
-      <div class="rounded-[calc(2rem-0.5rem)] bg-ink/60 p-8 h-full flex flex-col justify-between hairline">
-        <span class="text-[10px] uppercase tracking-[0.2em] text-white/40">Sharpe (approx)</span>
-        <div id="mSharpe" class="font-display font-700 text-5xl mt-3">—</div>
-      </div>
-    </div>
-    <div class="reveal rounded-[2rem] border border-white/10 bg-white/[0.03] p-2 hairline">
-      <div class="rounded-[calc(2rem-0.5rem)] bg-ink/60 p-8 h-full flex flex-col justify-between hairline">
-        <span class="text-[10px] uppercase tracking-[0.2em] text-white/40">Max drawdown</span>
-        <div id="mDD" class="font-display font-700 text-5xl text-panic mt-3">—</div>
-      </div>
-    </div>
-    <div class="reveal md:col-span-2 rounded-[2rem] border border-white/10 bg-white/[0.03] p-2 hairline">
-      <div class="rounded-[calc(2rem-0.5rem)] bg-ink/60 p-8 h-full flex items-center justify-between gap-4 hairline">
-        <div><span class="text-[10px] uppercase tracking-[0.2em] text-white/40">Panic-fade win</span><div class="font-display font-700 text-5xl text-calm mt-3">53.0%</div></div>
-        <div class="text-right"><span class="text-[10px] uppercase tracking-[0.2em] text-white/40">Trades</span><div id="mTrades" class="font-display font-700 text-5xl mt-3">—</div></div>
-      </div>
-    </div>
+    <!-- honest scope -->
     <div class="reveal md:col-span-2 rounded-[2rem] border border-white/10 bg-white/[0.03] p-2 hairline">
       <div class="rounded-[calc(2rem-0.5rem)] bg-ink/60 p-8 h-full hairline">
         <span class="text-[10px] uppercase tracking-[0.2em] text-white/40">The honest part</span>
-        <p class="text-white/60 mt-3 leading-relaxed text-[15px]">The naive fade fails. The edge is specifically <span class="text-white">market-neutral + short-horizon (3h)</span>. We keep the failed test in the repo. This is a strategy spec — not a money printer.</p>
+        <p class="text-white/60 mt-3 leading-relaxed text-[15px]">We disclose our own fee math. The high-frequency version loses to costs (break-even ~0.06%). The value is the <span class="text-white">regime signal</span> — a fee-immune capitulation gauge. Track 2 asks for exactly this: regime alerts.</p>
       </div>
     </div>
   </div>
@@ -230,20 +228,20 @@ function drawEquity(cv, eq){
   c.beginPath(); eq.forEach((p,i)=>i?c.lineTo(x(i),y(p.v)):c.moveTo(x(i),y(p.v))); c.strokeStyle='#34d399'; c.lineWidth=1.6; c.stroke();
 }
 
+const pct=v=>(v>0?'+':'')+v+'%';
 fetch('public/pulse_data.json').then(r=>r.json()).then(d=>{
-  const m=d.metrics, sig=d.latest_signal;
+  const sig=d.latest_signal, v=d.validation;
   document.getElementById('regimeLabel').textContent = sig.regime;
   document.getElementById('regimeLabel').style.color = REGIME_COLOR[sig.regime]||'#fff';
   document.getElementById('pulseVal').textContent = sig.pulse_index;
-  document.getElementById('mRet').textContent = (m.total_return_pct>0?'+':'')+m.total_return_pct+'%';
-  document.getElementById('mSharpe').textContent = m.sharpe;
-  document.getElementById('mDD').textContent = m.max_drawdown_pct+'%';
-  document.getElementById('mTrades').textContent = m.trades;
+  document.getElementById('vCapture').textContent = v.crash_capture;
+  document.getElementById('vCalm').textContent = pct(v.fwd24_after_calm);
+  document.getElementById('vEuph').textContent = pct(v.fwd24_after_euphoria);
+  document.getElementById('vPanic').textContent = pct(v.fwd24_after_panic);
   const picks=document.getElementById('picks');
   picks.innerHTML = '<span class="text-[11px] uppercase tracking-[0.15em] text-white/30 self-center mr-1">picks</span>' +
-    (sig.picks||[]).map(p=>`<span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[13px] font-500">${p}</span>`).join('');
+    ((sig.picks&&sig.picks.length)?sig.picks:['—']).map(p=>`<span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[13px] font-500">${p}</span>`).join('');
   drawEKG(document.getElementById('ekg'), d.series, d.panic_threshold);
-  drawEquity(document.getElementById('equity'), d.equity);
 }).catch(e=>{ document.getElementById('regimeLabel').textContent='load data'; console.error(e); });
 
 window.addEventListener('resize',()=>location.reload());

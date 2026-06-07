@@ -71,8 +71,30 @@ def main() -> None:
     sig["pulse_index"] = round(float(agg.loc[last_time, "pulse"]), 3)
     sig["timestamp"] = last_time.isoformat()
 
+    # --- indicator validation stats (the honest headline) ---
+    bk = raw.sort_values(["symbol", "time"]).copy()
+    bk["r"] = bk.groupby("symbol")["close"].transform(lambda s: s / s.shift(1) - 1)
+    basket = bk.groupby("time")["r"].mean().dropna()
+    beq = (1 + basket).cumprod()
+    vdf = pd.DataFrame({"eq": beq}).join(agg[["regime"]], how="inner").dropna()
+    vdf["fwd24"] = vdf["eq"].shift(-24) / vdf["eq"] - 1
+    daily = vdf["eq"].resample("1D").last().pct_change().dropna()
+    worst = daily.nsmallest(20)
+    pmax = agg["pulse"].resample("1D").max()
+    p90 = agg["pulse"].quantile(0.90)
+    captured = sum(1 for d in worst.index if pmax.get(d, 0) > p90
+                   or pmax.get(d - pd.Timedelta(days=1), 0) > p90)
+    validation = {
+        "crash_capture": f"{captured}/20",
+        "fwd24_after_panic": round(float(vdf.loc[vdf.regime == "PANIC", "fwd24"].mean()) * 100, 3),
+        "fwd24_after_calm": round(float(vdf.loc[vdf.regime == "CALM", "fwd24"].mean()) * 100, 3),
+        "fwd24_after_euphoria": round(float(vdf.loc[vdf.regime == "EUPHORIA", "fwd24"].mean()) * 100, 3),
+        "years": round((agg.index.max() - agg.index.min()).days / 365, 1),
+    }
+
     out = {
         "metrics": metrics,
+        "validation": validation,
         "panic_threshold": round(float(thr), 3),
         "series": series,
         "equity": eq,

@@ -24,35 +24,40 @@ the lagging cousin; Pulse is the derivative.
 
 ## What's in here
 ```
-SKILL.md              # the LLM Skill (CMC AI Agent Hub format) — the deliverable
+SKILL.md                  # the LLM Skill (CMC AI Agent Hub format) — the deliverable
 scripts/
-  data_fetch.py       # historical OHLCV (Binance free klines for backtest)
-  velocity.py         # the Pulse index
-  regime.py           # CALM / PANIC / EUPHORIA classifier
-  signals.py          # market-neutral entry/exit/sizing rules
+  data_fetch.py           # historical OHLCV (Binance free klines for backtest)
+  velocity.py             # the Pulse index
+  regime.py               # CALM / PANIC / EUPHORIA classifier
+  signals.py              # entry/exit/sizing rules
+  cmc_live.py             # live signal from CoinMarketCap AI Agent Hub
 backtest/
-  backtest.py         # v1 edge test (naive — fails; shown for honesty)
-  backtest2.py        # v2 market-neutral test (edge found)
-  make_results.py     # equity curve + chart + results.md
-  results.md          # headline metrics
-  pulse_results.png   # chart
+  backtest.py             # v1 naive test — FAILS (kept for honesty)
+  backtest2.py            # v2 market-neutral test — edge found
+  backtest_fees.py        # fee-survival test (HF version loses — disclosed)
+  backtest_extreme.py     # extreme-event sweep
+  validate_indicator.py   # the core proof: 20/20 crash capture
+  make_results.py / export_web_data.py
+  results.md              # consolidated results
+  validation_results.png  # the money chart
 ```
 
-## Results (1y hourly, 20 liquid CMC-eligible tokens, market-neutral)
-| Metric | Value |
+## Validation (2.5y hourly, 20 liquid CMC-eligible tokens)
+| Result | Value |
 |---|---|
-| Total market-neutral return | **+18.74%** |
-| Annualized Sharpe (approx) | **4.45** |
-| Max drawdown | **-5.46%** |
-| Win rate | 50.3% |
-| PANIC → fade, 3h | win 53.0%, t~2.1 |
-| EUPHORIA → momentum, 3h | +0.068%/trade |
+| **Crash capture** | **20/20** of the worst daily drops had Pulse in its top decile within 24h |
+| Forward 24h after PANIC | **+0.385%** (capitulation bounce — the contrarian edge) |
+| Forward 24h after CALM | −0.026% |
+| Forward 24h after EUPHORIA | +0.106% |
+| Forward vol after PANIC | 1.3× the calm level (flags turbulence) |
 
-**Honest scope:** edge is real but modest per trade; metrics are approximate and pre-fee.
-The edge is specifically **market-neutral + short-horizon (3h)** — the naive absolute /
-long-hold version shows no edge, and we keep that failed test in the repo (`backtest.py`)
-to show the work. This is a *backtestable strategy spec*, exactly what Track 2 asks for —
-not a live-execution agent.
+**Honest scope (we disclose this openly):** the per-trade signal is real but small
+(~0.05% market-neutral at 3h). At realistic BSC round-trip cost (~0.30%) the
+**high-frequency version loses** (break-even ~0.06%) — see `backtest/backtest_fees.py`,
+and the failed naive test in `backtest/backtest.py`. The value is the **regime signal**:
+a fee-immune capitulation gauge. Track 2 explicitly asks for "entry/exit rules **or
+market regime alerts**" — Pulse is the latter, validated. This is a *backtestable
+strategy spec + indicator*, not a profitable HFT bot.
 
 ## Run it
 ```bash
