@@ -107,18 +107,22 @@ async function narrate(signal, message) {
   const apiKey = process.env.LLM_API_KEY || process.env.OPENROUTER_API_KEY || "";
   // self-hosted servers usually need no key; only OpenRouter strictly requires one
   if (!apiKey && base.includes("openrouter.ai")) return null;
-  const model = process.env.PULSE_LLM_MODEL || "deepseek/deepseek-chat-v3-0324:free";
+  const model = process.env.PULSE_LLM_MODEL || "deepseek-v4-flash-free";
   const sys =
     "You are the Pulse agent — a crypto-market regime analyst running the Pulse Velocity-Regime skill " +
     "(a 'crypto VIX' measuring how fast the whole market reprices). You are given a JSON signal computed " +
-    "deterministically from live CoinMarketCap data. Explain it to a judge in 3-5 tight sentences: the regime " +
-    "(CALM/PANIC/EUPHORIA), what it means (panic = capitulation bounce to fade; euphoria = momentum; calm = stand aside), " +
-    "the conviction grade and why, and the concrete action/picks. Be sharp and concrete. Never invent numbers " +
-    "outside the JSON. No markdown headers, no disclaimers about not being financial advice.";
+    "deterministically from live CoinMarketCap data. Explain it to a judge in 3-5 tight sentences: the regime, " +
+    "the conviction grade and why, and the concrete action + picks.\n" +
+    "CRITICAL action semantics — do not invert them:\n" +
+    "- action FADE_LONG (PANIC): the market over-sold in a synchronized panic and tends to BOUNCE. " +
+    "You BUY / go LONG the listed oversold picks expecting a rebound. FADE means fade the DROP, i.e. buy it — never 'sell' or 'avoid'.\n" +
+    "- action MOMENTUM_LONG (EUPHORIA): BUY / go LONG the strongest picks, riding momentum.\n" +
+    "- action FLAT (CALM): no trade, stand aside, hold no positions.\n" +
+    "Never invent numbers outside the JSON. No markdown headers, no 'not financial advice' disclaimers.";
   const headers = { "Content-Type": "application/json" };
   if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
   try {
-    const ctrl = AbortSignal.timeout(20000);   // VPS cold-start guard
+    const ctrl = AbortSignal.timeout(45000);   // reasoning-model + cold-start guard
     const r = await fetch(base + "/chat/completions", {
       method: "POST", headers, signal: ctrl,
       body: JSON.stringify({
@@ -127,7 +131,9 @@ async function narrate(signal, message) {
           { role: "system", content: sys },
           { role: "user", content: `Judge asked: "${message}"\n\nLive signal JSON:\n${JSON.stringify(signal, null, 2)}` },
         ],
-        temperature: 0.4, max_tokens: 320,
+        // budget covers reasoning models (deepseek-v4-flash-free spends ~700
+        // reasoning tokens before the visible answer) + the answer itself.
+        temperature: 0.4, max_tokens: 1500,
       }),
     });
     if (!r.ok) return null;
