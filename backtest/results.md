@@ -13,12 +13,12 @@ decile within 24h. The gauge catches the crashes.
 
 | Forward 24h basket return | by regime |
 |---|---|
-| after CALM | -0.026% |
-| after EUPHORIA | +0.106% |
-| **after PANIC** | **+0.385%** (capitulation bounce) |
+| after CALM | -0.03% |
+| after EUPHORIA | +0.103% |
+| **after PANIC** | **+0.37%** (capitulation bounce) |
 
 - Forward volatility after PANIC is **1.3x** the CALM level
-  (4.71% vs 3.68%) — panic readings flag turbulent tape.
+  (4.72% vs 3.69%) — panic readings flag turbulent tape.
 - Chart: `validation_results.png`.
 
 ## Strategy spec (derived from the gauge)

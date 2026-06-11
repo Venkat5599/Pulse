@@ -146,8 +146,8 @@ by running the live snapshot proxy over 21,599 historical hourly cross-sections.
 Pulse is validated as a **capitulation / fear gauge**:
 - **Crash capture: 20/20** — every one of the worst daily drops had Pulse in its
   top decile within 24h.
-- **Forward 24h after PANIC: +0.385%** (capitulation bounce — best of all regimes)
-  vs −0.026% after CALM. Panic = contrarian buy.
+- **Forward 24h after PANIC: +0.37%** (capitulation bounce — best of all regimes)
+  vs −0.03% after CALM. Panic = contrarian buy.
 - Forward volatility after PANIC is **1.3×** the calm level — flags turbulent tape.
 
 **Honest fee disclosure:** the per-trade signal is small (~0.05% at 3h). At realistic

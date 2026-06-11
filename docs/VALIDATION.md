@@ -20,11 +20,11 @@ python backtest/validate_indicator.py
 
 | Forward 24h basket return | by regime |
 |---|---|
-| after CALM | −0.026% |
-| after EUPHORIA | +0.106% |
-| **after PANIC** | **+0.385%** (capitulation bounce — best of all regimes) |
+| after CALM | −0.03% |
+| after EUPHORIA | +0.103% |
+| **after PANIC** | **+0.37%** (capitulation bounce — best of all regimes) |
 
-- Forward 24h **volatility** after PANIC: **4.71%** vs **3.68%** after CALM (**1.3×**).
+- Forward 24h **volatility** after PANIC: **4.72%** vs **3.69%** after CALM (**1.3×**).
   Panic readings precede turbulent tape — exactly what a fear gauge should flag.
 - Interpretation: a PANIC reading marks capitulation; the contrarian (fade) side has
   positive expectancy, with elevated risk.

@@ -53,9 +53,9 @@ Validated on **2.5 years** of hourly data, 20 liquid CMC-eligible tokens:
 
 | Forward 24h return | by regime | read |
 |---|---|---|
-| after `CALM` | −0.026% | quiet → nothing |
-| after `EUPHORIA` | +0.106% | greed → momentum |
-| after **`PANIC`** | **+0.385%** | **capitulation → the bounce** |
+| after `CALM` | −0.03% | quiet → nothing |
+| after `EUPHORIA` | +0.103% | greed → momentum |
+| after **`PANIC`** | **+0.37%** | **capitulation → the bounce** |
 
 Panic readings are followed by the **best** forward returns — capitulation, then mean-reversion. Forward volatility after panic is **1.3×** the calm level. → [full methodology &amp; numbers](docs/VALIDATION.md)
 
