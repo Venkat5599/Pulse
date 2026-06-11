@@ -13,7 +13,13 @@
 
 const BASKET = ["ETH","XRP","DOGE","ADA","LINK","BCH","LTC","AVAX","DOT","UNI",
   "ATOM","FIL","INJ","FET","CAKE","TRX","SHIB","TON","AAVE","LDO"];
-const BINANCE = "https://api.binance.com/api/v3/klines";
+// Multiple hosts: api.binance.com geoblocks AWS/US datacenter IPs (HTTP 451);
+// data-api.binance.vision is Binance's public market-data mirror (no geoblock,
+// no auth) and is the reliable fallback from cloud regions.
+const KLINE_HOSTS = [
+  "https://data-api.binance.vision/api/v3/klines",
+  "https://api.binance.com/api/v3/klines",
+];
 const CMC_BASE = "https://pro-api.coinmarketcap.com";
 const LIMIT = 720;          // 30 days of hourly bars (<= Binance 1000 max/call)
 const VOL_WINDOW = 168;     // 1-week rolling vol baseline (matches velocity.py)
@@ -56,14 +62,20 @@ function quantile(sorted, q) {
 }
 
 async function fetchCloses(sym, signal) {
-  const url = `${BINANCE}?symbol=${sym}USDT&interval=1h&limit=${LIMIT}`;
-  const r = await fetch(url, { signal });
-  if (!r.ok) throw new Error(`${sym} ${r.status}`);
-  const rows = await r.json();
-  // [openTime, open, high, low, close, ...] — key close by bar open time.
-  const out = new Map();
-  for (const row of rows) out.set(row[0], Number(row[4]));
-  return out;
+  const qs = `?symbol=${sym}USDT&interval=1h&limit=${LIMIT}`;
+  let lastErr;
+  for (const host of KLINE_HOSTS) {
+    try {
+      const r = await fetch(host + qs, { signal });
+      if (!r.ok) { lastErr = new Error(`${sym} ${r.status}`); continue; }
+      const rows = await r.json();
+      // [openTime, open, high, low, close, ...] — key close by bar open time.
+      const out = new Map();
+      for (const row of rows) out.set(row[0], Number(row[4]));
+      if (out.size) return out;
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error(`${sym} unavailable`);
 }
 
 async function fearGreed(key, signal) {
