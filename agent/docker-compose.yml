@@ -1,0 +1,26 @@
+# Pulse RAG agent + nginx reverse proxy. Run from pulse/agent/:
+#   docker compose up -d --build
+# Requires pulse/.env with LLM_API_KEY (see .env.example).
+services:
+  pulse-rag:
+    build:
+      context: ..                 # pulse/ repo root, so the corpus is copyable
+      dockerfile: agent/Dockerfile
+    image: pulse-rag:latest
+    restart: unless-stopped
+    env_file:
+      - ../.env                   # LLM_API_KEY, LLM_BASE_URL, PULSE_LLM_MODEL
+    expose:
+      - "8080"
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    depends_on:
+      - pulse-rag
+    # Host :80=Caddy, :8080=AuditFlow, :8090=safeBuy. Publish on free :8099.
+    # Public URL: http://<vps-ip>:8099  (front with Caddy/a domain later for :80/443)
+    ports:
+      - "8099:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro

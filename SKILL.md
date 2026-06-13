@@ -45,6 +45,8 @@ Trigger when the user asks any of:
 - "Is the market panicking / is this a dip to fade?"
 - "Give me a crypto trading signal based on volatility / velocity."
 - "Run the Pulse strategy on <basket>."
+- "How does Pulse work / catch crashes / what's the fee disclosure?" → answer with
+  the RAG Knowledge Agent (`agent/`, see "Ask the skill" below), grounded + cited.
 
 ## CoinMarketCap data inputs (AI Agent Hub)
 
@@ -140,6 +142,23 @@ Backtest uses Binance free klines (CMC free tier paywalls historical OHLCV);
 live path uses CMC. Same regime/signal logic across both; the live high-velocity
 threshold is calibrated to the backtest's 90th-percentile decile (2.228), computed
 by running the live snapshot proxy over 21,599 historical hourly cross-sections.
+
+**Ask the skill (RAG Knowledge Agent):** a retrieval-augmented agent ships in
+`agent/` — it indexes this skill's own docs (SKILL.md, README, `docs/`, the
+strategy `scripts/`, backtest results) with BM25 and answers questions grounded in
+those passages with inline citations, via DeepSeek V4 Flash. A judge can ask *"how
+does Pulse catch crashes?"*, *"what's the fee disclosure?"*, *"what does FADE_LONG
+mean?"* and get a cited answer instead of reading every doc.
+```bash
+cd agent && cp .env.example ../.env   # set LLM_API_KEY (DeepSeek V4 Flash gateway)
+pip install -r requirements.txt
+python -m agent ask "How does Pulse catch crashes and what was the hit rate?"
+# or serve the chat UI + API:
+uvicorn agent.server:app --host 0.0.0.0 --port 8080   # /ask, /ask/stream (SSE), /health
+```
+Live instance: **http://187.127.137.136:8099** (Docker + nginx on the VPS). Model:
+`deepseek/deepseek-v4-flash`. Retrieval is pure-Python BM25 — no embeddings, no GPU.
+See `agent/README.md`.
 
 ## Validation (2.5y hourly, 20 tokens — see backtest/results.md)
 

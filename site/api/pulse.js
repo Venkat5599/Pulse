@@ -132,11 +132,11 @@ async function narrateStream(signal, message, onDelta) {
   // Provider-agnostic: point LLM_BASE_URL at any OpenAI-compatible server
   // (self-hosted DeepSeek on a VPS via vLLM/ollama/llama.cpp/TGI, or OpenRouter).
   // Falls back to OpenRouter only if LLM_BASE_URL is unset.
-  const base = (process.env.LLM_BASE_URL || "https://openrouter.ai/api/v1").replace(/\/$/, "");
+  const base = (process.env.LLM_BASE_URL || "https://api.aicredits.in/v1").replace(/\/$/, "");
   const apiKey = process.env.LLM_API_KEY || process.env.OPENROUTER_API_KEY || "";
-  // self-hosted servers usually need no key; only OpenRouter strictly requires one
-  if (!apiKey && base.includes("openrouter.ai")) return null;
-  const model = process.env.PULSE_LLM_MODEL || "deepseek-v4-flash-free";
+  // aicredits / openrouter both require a key; only self-hosted gateways don't
+  if (!apiKey && (base.includes("openrouter.ai") || base.includes("aicredits.in"))) return null;
+  const model = process.env.PULSE_LLM_MODEL || "deepseek/deepseek-v4-flash";
   const headers = { "Content-Type": "application/json" };
   if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
   try {
