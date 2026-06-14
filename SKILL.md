@@ -156,8 +156,9 @@ python -m agent ask "How does Pulse catch crashes and what was the hit rate?"
 # or serve the chat UI + API:
 uvicorn agent.server:app --host 0.0.0.0 --port 8080   # /ask, /ask/stream (SSE), /health
 ```
-Live instance: **http://187.127.137.136:8099** (Docker + nginx on the VPS). Model:
-`deepseek/deepseek-v4-flash`. Retrieval is pure-Python BM25 — no embeddings, no GPU.
+Live instance: **https://pulse-agent.187.127.137.136.sslip.io** (Docker + nginx +
+Caddy auto-TLS on the VPS). Model: `deepseek/deepseek-v4-flash`. Retrieval is
+pure-Python BM25 — no embeddings, no GPU.
 See `agent/README.md`.
 
 ## Validation (2.5y hourly, 20 tokens — see backtest/results.md)

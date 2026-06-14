@@ -48,8 +48,10 @@ On the Ubuntu 24.04 VPS, with the `pulse/` repo synced and `pulse/.env` present:
 cd /opt/pulse
 bash agent/deploy.sh          # installs Docker if needed, builds, runs, health-checks
 ```
-Serves on port **80** via nginx → the agent container on 8080. Containers
-`restart: unless-stopped`, so they survive reboots.
+nginx publishes on host **:8099** → the agent container on 8080. Containers
+`restart: unless-stopped`, so they survive reboots. Front with Caddy for HTTPS:
+the live instance is **https://pulse-agent.187.127.137.136.sslip.io** (Caddy
+auto-TLS → `localhost:8099`).
 
 ## Files
 | File | Role |

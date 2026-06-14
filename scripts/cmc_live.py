@@ -91,6 +91,19 @@ def main() -> None:
         except Exception:
             fg_val = None
 
+    # Global metrics (2nd CMC Agent Hub endpoint, free tier) — BTC dominance and
+    # total-market-cap 24h move add macro context: a market-wide drawdown with
+    # rising BTC dominance is a classic flight-to-safety capitulation tell.
+    gm = get("/v1/global-metrics/quotes/latest", {}, key)
+    btc_dom = mcap_24h = None
+    if gm["status"] == 200:
+        try:
+            d = gm["json"]["data"]
+            btc_dom = round(d["btc_dominance"], 2)
+            mcap_24h = round(d["quote"]["USD"]["total_market_cap_yesterday_percentage_change"], 2)
+        except Exception:
+            pass
+
     # regime: high dispersion-adjusted speed = high velocity. Threshold is the
     # backtest-calibrated 90th-percentile decile (see PULSE_PANIC_THRESHOLD).
     high = pulse > PULSE_PANIC_THRESHOLD
@@ -105,13 +118,15 @@ def main() -> None:
         picks, action = [], "FLAT"
 
     out = {
-        "source": "CoinMarketCap AI Agent Hub (quotes/latest + fear-and-greed)",
+        "source": "CoinMarketCap AI Agent Hub (quotes/latest + fear-and-greed + global-metrics)",
         "pulse_index": round(pulse, 3),
         "direction_1h": round(direction * 100, 3),
         "regime": regime,
         "action": action,
         "picks": picks,
         "fear_greed": fg_val,
+        "btc_dominance": btc_dom,
+        "total_mcap_change_24h": mcap_24h,
         "hold_hours": 3,
         "stop_loss": -0.05,
         "take_profit": 0.06,
