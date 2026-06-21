@@ -1,83 +1,80 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/🫀-Pulse-fb5e6d?style=for-the-badge&labelColor=0a0f12" alt="Pulse" />
+  <img src="https://img.shields.io/badge/🫀-Pulse_Velocity_Regime-fb5e6d?style=for-the-badge&labelColor=0a0f12" alt="Pulse Velocity Regime" />
 </p>
 
 <h1 align="center">Pulse</h1>
 
 <p align="center">
-  <strong>The crypto market has a heartbeat. Pulse reads it.</strong>
-</p>
-
-<p align="center">
-  A regime-detection trading Skill that measures market <strong>velocity</strong> — the speed and
-  synchronization of repricing — names the regime (<strong>CALM · PANIC · EUPHORIA</strong>),
-  and turns it into a backtestable, fee-honest strategy. Built as a
-  <strong>CoinMarketCap AI Agent Hub Skill</strong>.
+  <strong>A Regime-Detection Trading Skill for Autonomous Crypto Agents — powered by CoinMarketCap</strong>
 </p>
 
 <p align="center">
   <a href="https://pulse-vix.vercel.app">
     <img src="https://img.shields.io/badge/🔴_LIVE-pulse--vix.vercel.app-34d399?style=for-the-badge" alt="Live demo" />
   </a>
-  <img src="https://img.shields.io/badge/Crash_Capture-20%2F20-fb5e6d?style=for-the-badge" alt="Crash capture" />
-  <img src="https://img.shields.io/badge/Python_·_BM25_RAG-363636?style=for-the-badge&logo=python" alt="Python" />
+  <a href="https://pulse-agent.187.127.137.136.sslip.io">
+    <img src="https://img.shields.io/badge/💬_ASK_THE_SKILL-RAG_Agent-00D4FF?style=for-the-badge" alt="RAG agent" />
+  </a>
+  <img src="https://img.shields.io/badge/Python-3.11-363636?style=for-the-badge&logo=python" alt="Python" />
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/BNB_Hack-Track_2_Strategy_Skills-fbbf24?style=flat-square" alt="Track 2" />
   <img src="https://img.shields.io/badge/data-CoinMarketCap_AI_Agent_Hub-3B82F6?style=flat-square" alt="CMC" />
-  <img src="https://img.shields.io/badge/backtest-2.5_years_hourly-success?style=flat-square" alt="Backtest" />
+  <img src="https://img.shields.io/badge/crash_capture-20%2F20-fb5e6d?style=flat-square" alt="Crash capture" />
   <img src="https://img.shields.io/badge/license-MIT-black?style=flat-square" alt="MIT" />
 </p>
 
 ---
 
-## 📋 Overview
+## 📋 Project Overview
 
-**Pulse** is an autonomous regime-detection Skill for crypto. Every other signal — Fear & Greed,
-RSI, sentiment indexes — measures **where price is**. By the time they move, the crash already
-happened. Pulse measures **how fast price is moving** — the second derivative — so the signal
+**Pulse** is a strategy Skill that turns live CoinMarketCap data into a regime-switching trading
+signal. Every other indicator — Fear & Greed, RSI, sentiment indexes — measures **where price is**.
+By the time they move, the crash already happened. Pulse measures **how fast price is moving** — the
+speed and synchronization of repricing across a whole basket. That's the *second derivative*, and it
 *leads* instead of *lags*.
 
-> **Fear & Greed tells you the crowd's _mood_. Pulse tells you the crowd's _speed_.**
-> Mood is lagging. Speed is leading.
+### What It Does
 
-Given live CoinMarketCap data for a basket of tokens, Pulse:
+- **Computes a velocity index** — the "Pulse index", a crypto VIX, from z-scored move sizes
+- **Classifies the regime** — `CALM` / `PANIC` / `EUPHORIA`, every hour
+- **Switches the strategy** — fade oversold in panic, ride momentum in euphoria, stand aside in calm
+- **Grades conviction** — confirms the regime against CMC's Fear & Greed index
+- **Emits an actionable signal** — JSON with picks, hold time, stop, take-profit — no wallet, no signing
 
-1. Computes the **Pulse index** — average z-scored move size across the basket (a "crypto VIX").
-2. Classifies the **regime** — `CALM` / `PANIC` / `EUPHORIA`.
-3. Emits a **market-neutral strategy** — which tokens to long, hold time, stop/take-profit.
-4. Grades **conviction** by confirming the regime against CMC's Fear & Greed index.
+### Key Innovation
 
-It is a **backtestable strategy spec**, not a live-execution agent — no wallet, no signing,
-no money. Exactly what Track 2 asks for.
+Every other signal reads the **level** of price. Pulse reads its **velocity** — and a burst of fast,
+synchronized repricing *is* the crowd capitulating, visible before the bottom prints.
 
-### The agent *decides* — it doesn't just signal
+```
+Standard signal:  Price Level → Fear & Greed → "the crowd's mood"   (lagging)
+Pulse:            Price SPEED → Pulse index  → "the crowd's regime" (leading)
+```
 
-Pulse runs as a self-pacing closed loop: poll the regime, act only when a feedback gate clears
-(`regime != last_regime` **and** conviction is HIGH), and exit on a defined condition
-(hold elapsed · stop · take-profit · regime reverts). It suppresses duplicates, widens its
-interval in calm, tightens it in panic, and never asks a human between ticks. That is
-agent-native behavior.
+It is a **backtestable strategy spec**, not a live-execution agent. Exactly what Track 2 asks for.
 
 ---
 
-## 🧠 Why this is different
+## 🌐 Why This Matters for the CMC Agent Hub
 
-Every other signal looks at **where price is**. Pulse looks at **how fast it's moving** — the
-*second derivative*.
+### The Track 2 Opportunity
 
-| | Fear & Greed (the standard) | 🫀 **Pulse** (this) |
-|---|---|---|
-| Measures | sentiment **level** | repricing **speed + synchronization** |
-| Nature | **lagging** | **leading** |
-| Output | a number 0–100 | a **regime** + a **strategy** |
-| In CMC's skill library? | ✅ | ❌ **(this fills the gap)** |
+Track 2 wants a CMC Skill that turns market data into a trading strategy — a backtestable spec, not a
+live-trading agent. CoinMarketCap's own skill library has data, report, and research skills, but
+**no strategy skill, and nothing that measures velocity.** Pulse fills that gap.
 
-CoinMarketCap's official skill repo has data, report, and research skills — but **no strategy
-skill, and nothing that measures velocity.** Pulse is a new primitive.
+### What We Bring
 
-### It's all three Track-2 example builds in one
+| Benefit | Impact |
+|---------|--------|
+| **A net-new primitive** | A "crypto VIX" measuring repricing speed — not in CMC's skill library |
+| **All 3 example builds in one** | Regime-detection + sentiment-divergence + momentum, in a single Skill |
+| **CMC-native end to end** | Quotes, Fear & Greed, and global metrics — three Agent Hub endpoints |
+| **Honest & fundable** | Discloses its own fee math; the regime alert is the fee-immune product |
+
+### It IS all three Track-2 examples
 
 | Track 2 asked for | Pulse delivers |
 |---|---|
@@ -87,41 +84,128 @@ skill, and nothing that measures velocity.** Pulse is a new primitive.
 
 ---
 
-## 🔥 The proof — it catches every crash
+## 🚀 Live Endpoints
 
-Validated on **2.5 years** of hourly data, 20 liquid CMC-eligible tokens (21,599 hourly
-cross-sections).
+| Resource | URL |
+|----------|-----|
+| **Live demo (the dashboard)** | https://pulse-vix.vercel.app |
+| **Ask the Skill (RAG agent)** | https://pulse-agent.187.127.137.136.sslip.io |
+| **Repo** | https://github.com/Venkat5599/Pulse |
+| **Data source** | https://coinmarketcap.com/api/agent |
 
-<div align="center">
+### Install the Skill (one line)
 
-### `20 / 20`
-**Of the 20 worst daily drops, Pulse was in its top decile within 24h. Every single one.**
-
-</div>
-
-| Forward 24h return | by regime | read |
-|---|---|---|
-| after `CALM` | −0.03% | quiet → nothing |
-| after `EUPHORIA` | +0.103% | greed → momentum |
-| after **`PANIC`** | **+0.37%** | **capitulation → the bounce** |
-
-Panic readings are followed by the **best** forward returns — capitulation, then mean-reversion.
-Forward volatility after panic is **1.3×** the calm level. → [full methodology](docs/VALIDATION.md)
+```bash
+npx skills add https://github.com/Venkat5599/Pulse -y
+```
+Installs the `pulse-velocity-regime` Skill into Claude Code, Cursor, Codex, Gemini CLI + 12 more.
 
 ---
 
-## 🪙 We disclose our own fee math (the honest part)
+## 📖 How to Use
 
-Most "winning strategy" submissions quietly skip transaction costs. We don't.
+### Option 1: Live signal (the deliverable a judge runs)
 
-- The raw per-trade signal is **real but small** (~0.05% market-neutral at 3h).
-- At realistic BSC round-trip cost (~0.30%), the **high-frequency version loses** — break-even is
-  only **~0.06%**. We keep the failed test (`backtest/backtest.py`) **in the repo on purpose.**
-- ✅ The value is the **regime signal itself** — a *fee-immune capitulation gauge*. Track 2
-  explicitly asks for **"entry/exit rules OR market regime alerts."** Pulse is the gauge, validated.
+```bash
+export CMC_API_KEY=your_key            # free Basic tier at pro.coinmarketcap.com
+pip install -r requirements.txt
+python scripts/cmc_live.py
+```
 
-> A fragile strategy dressed as a money-printer dies under one judge question. An honest,
-> validated indicator that discloses its own limits earns trust. We chose the second.
+Output — an actionable signal JSON:
+
+```jsonc
+{
+  "source": "CoinMarketCap AI Agent Hub (quotes/latest + fear-and-greed + global-metrics)",
+  "pulse_index": 2.41,
+  "direction_1h": -1.83,
+  "regime": "PANIC",
+  "action": "FADE_LONG",
+  "picks": ["INJ", "FET", "LDO", "AAVE", "DOT"],
+  "fear_greed": 18,
+  "btc_dominance": 54.7,
+  "total_mcap_change_24h": -6.2,
+  "hold_hours": 3,
+  "stop_loss": -0.05,
+  "take_profit": 0.06,
+  "sizing": "equal-weight, market-neutral",
+  "conviction": { "grade": "HIGH", "reason": "velocity panic + extreme fear agree (capitulation)" }
+}
+```
+
+### Option 2: Python integration
+
+```python
+import pandas as pd
+from scripts.velocity import compute, load_panel
+from scripts.signals import generate, to_dict
+
+# 1. Build the velocity panel + regime from OHLCV
+panel = load_panel()                 # hourly OHLCV per symbol
+agg   = compute(panel)               # adds pulse, direction, regime per timestamp
+row   = agg.iloc[-1]                 # latest bar
+
+# 2. Generate the market-neutral signal for that regime
+last_returns = panel.groupby("symbol")["close"].apply(
+    lambda s: s.pct_change().iloc[-1])
+signal = generate(row["regime"], last_returns)
+
+print(to_dict(signal))
+# { "regime": "PANIC", "action": "FADE_LONG", "picks": [...],
+#   "hold_hours": 3, "stop_loss": -0.05, "take_profit": 0.06, ... }
+```
+
+### Option 3: Ask the Skill (RAG agent)
+
+For grounded, cited answers about the strategy — no need to read every doc.
+
+```bash
+cd agent && cp .env.example ../.env          # set LLM_API_KEY
+pip install -r requirements.txt
+python -m agent ask "How does Pulse catch crashes and what was the hit rate?"
+
+# or serve the chat UI + API:
+uvicorn agent.server:app --host 0.0.0.0 --port 8080   # /ask, /ask/stream (SSE), /health
+```
+
+Pure-Python **BM25** retrieval over the Skill's own docs + answer via **DeepSeek V4 Flash**.
+A judge can ask *"what's the fee disclosure?"* or *"what does FADE_LONG mean?"* and get a cited reply.
+
+### Module Reference
+
+| Module | Description | Entry point |
+|--------|-------------|-------------|
+| `scripts/velocity.py` | Computes the Pulse index + per-timestamp regime | `compute(df)` |
+| `scripts/regime.py` | CALM / PANIC / EUPHORIA classifier | `classify(pulse, direction, threshold)` |
+| `scripts/signals.py` | Entry / exit / sizing rules per regime | `generate(regime, last_returns)` |
+| `scripts/sentiment.py` | Conviction layer (regime + Fear & Greed) | `conviction(regime, fear_greed)` |
+| `scripts/cmc_live.py` | Live signal from CoinMarketCap | `python scripts/cmc_live.py` |
+| `scripts/data_fetch.py` | Historical OHLCV (free Binance klines, no key) | `python scripts/data_fetch.py` |
+
+---
+
+## 🛡️ Strategy Rules (the regime engine)
+
+One velocity index drives a state machine. Each regime switches the rule deterministically — the LLM
+orchestrates, the math decides.
+
+| Regime | Trigger | Action | Picks | Hold | Stop | Take-Profit |
+|--------|---------|--------|-------|------|------|-------------|
+| **CALM** | Pulse ≤ threshold | `FLAT` — stand aside | — | — | — | — |
+| **PANIC** | Pulse > threshold **and** cluster falling | `FADE_LONG` — fade the overshoot | 5 most oversold | 3h | −5% | +6% |
+| **EUPHORIA** | Pulse > threshold **and** cluster rising | `MOMENTUM_LONG` — ride the trend | 5 strongest | 3h | −5% | +6% |
+
+All positions: **equal-weight, market-neutral**. The high-velocity threshold (`2.228`) is the
+backtest-calibrated 90th-percentile decile over 21,599 historical hourly cross-sections.
+
+### Conviction grading (the divergence gate)
+
+```
+PANIC    + extreme fear  (F&G ≤ 25)  → HIGH   (capitulation — price and crowd agree)
+EUPHORIA + extreme greed (F&G ≥ 75)  → HIGH   (momentum — price and crowd agree)
+agreement-ish                        → MEDIUM
+disagreement                         → LOW    (size down / wait)
+```
 
 ---
 
@@ -135,7 +219,8 @@ Most "winning strategy" submissions quietly skip transaction costs. We don't.
                                    │
                                    ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│              CoinMarketCap AI Agent Hub  (quotes + Fear & Greed)        │
+│              CoinMarketCap AI Agent Hub                                  │
+│        quotes/latest  ·  fear-and-greed  ·  global-metrics              │
 └────────────────────────────────────────────────────────────────────────┘
                                    │
                                    ▼
@@ -158,7 +243,7 @@ Most "winning strategy" submissions quietly skip transaction costs. We don't.
                                    │
                                    ▼
 ┌────────────────────────────────────────────────────────────────────────┐
-│            Conviction layer  (sentiment.py)  + CMC Fear & Greed          │
+│            Conviction layer  (sentiment.py)  +  CMC Fear & Greed         │
 │        velocity + sentiment agree → HIGH   ·   disagree → LOW (wait)    │
 └────────────────────────────────────────────────────────────────────────┘
                                    │
@@ -172,94 +257,68 @@ speed_i  = |log_return_i| / rolling_std_i        # z-scored move size (168h vol 
 Pulse    = mean_i speed_i                          # the crypto VIX
 regime   = CALM | PANIC (fast+falling) | EUPHORIA (fast+rising)   # 90th-percentile threshold
 ```
-→ [architecture deep-dive](docs/ARCHITECTURE.md)
 
 ---
 
-## ⚡ Install in one line
+## 🔥 The Proof — it catches every crash
 
-```bash
-npx skills add https://github.com/Venkat5599/Pulse -y
-```
-Installs the `pulse-velocity-regime` Skill into Claude Code, Cursor, Codex, Gemini CLI + 12 more.
+Validated on **2.5 years** of hourly data, 20 liquid CMC-eligible tokens (21,599 cross-sections).
 
-**Run the live signal:**
-```bash
-export CMC_API_KEY=your_key            # free at pro.coinmarketcap.com
-pip install -r requirements.txt
-python scripts/cmc_live.py
-```
-```jsonc
-{ "regime": "PANIC", "action": "FADE_LONG",
-  "picks": ["INJ","FET","LDO","AAVE","DOT"],
-  "fear_greed": 18,
-  "conviction": { "grade": "HIGH", "reason": "velocity panic + extreme fear agree" } }
-```
+<div align="center">
 
-**Or just ask your agent:** _"What's the crypto market regime right now?"_
+### `20 / 20`
+**Of the 20 worst daily drops, Pulse was in its top decile within 24h. Every single one.**
 
----
+</div>
 
-## 💬 Ask the Skill (RAG Knowledge Agent)
+| Forward 24h return | by regime | read |
+|---|---|---|
+| after `CALM` | −0.03% | quiet → nothing |
+| after `EUPHORIA` | +0.103% | greed → momentum |
+| after **`PANIC`** | **+0.37%** | **capitulation → the bounce** |
 
-A retrieval-augmented agent ships in `agent/`. It indexes Pulse's own docs (SKILL.md, README,
-`docs/`, the strategy `scripts/`, backtest results) with **pure-Python BM25** — no embeddings,
-no GPU — and answers questions grounded in those passages with inline citations, via
-**DeepSeek V4 Flash**.
+Forward volatility after panic is **1.3×** the calm level. → [full methodology](docs/VALIDATION.md)
 
-```bash
-cd agent && cp .env.example ../.env          # set LLM_API_KEY
-pip install -r requirements.txt
-python -m agent ask "How does Pulse catch crashes and what was the hit rate?"
+### We disclose our own fee math (the honest part)
 
-# or serve the chat UI + API:
-uvicorn agent.server:app --host 0.0.0.0 --port 8080   # /ask, /ask/stream (SSE), /health
-```
-
-**Live instance:** https://pulse-agent.187.127.137.136.sslip.io
-(Docker + nginx + Caddy auto-TLS on a single VPS · model `deepseek/deepseek-v4-flash`)
-
-A judge can ask *"how does Pulse catch crashes?"*, *"what's the fee disclosure?"*,
-*"what does FADE_LONG mean?"* and get a cited answer instead of reading every doc.
+- The raw per-trade signal is **real but small** (~0.05% market-neutral at 3h).
+- At realistic BSC round-trip cost (~0.30%), the **high-frequency version loses** — break-even is
+  only **~0.06%**. We keep the failed test (`backtest/backtest.py`) **in the repo on purpose.**
+- ✅ The value is the **regime alert itself** — a *fee-immune capitulation gauge*. Track 2 asks for
+  *"entry/exit rules OR market regime alerts."* Pulse is the gauge, validated.
 
 ---
 
-## 🚀 How to run
+## 🧪 Testing & Reproduce the Proof
 
 ```bash
-# Live signal (primary — the deliverable a judge runs)
-export CMC_API_KEY=<your CoinMarketCap key>   # free Basic tier works
-python scripts/cmc_live.py                    # -> JSON: regime, action, picks, fear_greed
+# Pull history (free Binance klines, no key)
+python scripts/data_fetch.py
 
-# Validation / backtest (reproduce the proof)
-python scripts/data_fetch.py                  # pull history (free Binance klines, no key)
-python backtest/validate_indicator.py         # 20/20 crash capture, regime forward returns
-python backtest/backtest_fees.py              # honest fee-survival disclosure
+# Run the validation suite
+python backtest/validate_indicator.py     # 20/20 crash capture, regime forward returns
+python backtest/backtest_fees.py          # honest fee-survival disclosure
+
+# Expected highlights:
+#  ✅ Crash capture: 20/20 worst drops had Pulse in top decile within 24h
+#  ✅ Forward 24h after PANIC: +0.37% (best of all regimes)
+#  ❌ Naive high-frequency backtest LOSES after 0.30% fees (kept on purpose)
 ```
 
-Backtest uses Binance free klines (CMC free tier paywalls historical OHLCV); the live path uses
-CMC. Same regime/signal logic across both; the live high-velocity threshold (2.228) is calibrated
-to the backtest's 90th-percentile decile.
+Backtest uses Binance free klines (CMC free tier paywalls historical OHLCV); the live path uses CMC.
+Same regime/signal logic across both.
 
 ---
 
-## 📂 What's inside
+## 📁 Project Structure
 
 ```
 pulse/
 ├── SKILL.md                  # ⭐ the CMC AI Agent Hub Skill (the deliverable)
-├── scripts/
-│   ├── velocity.py           # the Pulse index
-│   ├── regime.py             # CALM / PANIC / EUPHORIA classifier
-│   ├── signals.py            # entry / exit / sizing rules
-│   ├── sentiment.py          # conviction layer (regime + Fear & Greed)
-│   ├── cmc_live.py           # live signal from CoinMarketCap
-│   └── data_fetch.py         # historical OHLCV (free, no key)
-├── backtest/
+├── scripts/                  # the strategy engine (velocity, regime, signals, sentiment, live)
+├── backtest/                 # validation + honest fee disclosure
 │   ├── validate_indicator.py # ⭐ 20/20 crash-capture proof
-│   ├── backtest.py           # naive test — FAILS (kept for honesty)
-│   ├── backtest_fees.py      # fee-survival disclosure
-│   └── results.md            # consolidated numbers
+│   └── backtest.py           # naive test — FAILS (kept for honesty)
 ├── agent/                    # 💬 BM25 RAG knowledge agent (DeepSeek V4 Flash)
 ├── site/                     # the live Vercel demo
 └── docs/                     # 📚 methodology, architecture, validation, judges' map
@@ -267,36 +326,39 @@ pulse/
 
 ---
 
+## 📚 Documentation
+
+- [METHODOLOGY.md](docs/METHODOLOGY.md) — the thesis: why speed leads mood
+- [ARCHITECTURE.md](docs/ARCHITECTURE.md) — the system, the math, the data flow
+- [VALIDATION.md](docs/VALIDATION.md) — every number, every test, honestly
+- [JUDGES.md](docs/JUDGES.md) — mapped to the 4 Track-2 criteria
+- [FAQ.md](docs/FAQ.md) — the hard questions, answered
+
+---
+
 ## 🛠️ Tech Stack
 
-- **Strategy:** Python, pandas, numpy — deterministic core; the LLM orchestrates, the math decides
+- **Strategy:** Python 3.11, pandas, numpy — deterministic core
 - **Data:** CoinMarketCap AI Agent Hub (live) · Binance free klines (backtest)
-- **Knowledge agent:** pure-Python BM25 retrieval + DeepSeek V4 Flash, FastAPI + SSE streaming
+- **Knowledge agent:** pure-Python BM25 retrieval + DeepSeek V4 Flash, FastAPI + SSE
 - **Demo site:** Vercel static deploy
 - **Infra:** Docker + nginx + Caddy (auto-HTTPS), single-VPS deploy
 
 ---
 
-## 📚 Docs
+## 📈 Roadmap
 
-| Doc | What |
-|---|---|
-| [docs/METHODOLOGY.md](docs/METHODOLOGY.md) | The thesis: why speed leads mood |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | The system, the math, the data flow |
-| [docs/VALIDATION.md](docs/VALIDATION.md) | Every number, every test, honestly |
-| [docs/JUDGES.md](docs/JUDGES.md) | Mapped to the 4 Track-2 criteria |
-| [docs/FAQ.md](docs/FAQ.md) | The hard questions, answered |
-
----
-
-## 🔗 Links
-
-| Resource | URL |
-|----------|-----|
-| **Live demo** | https://pulse-vix.vercel.app |
-| **Ask the Skill (RAG agent)** | https://pulse-agent.187.127.137.136.sslip.io |
-| **Repo** | https://github.com/Venkat5599/Pulse |
-| **Data source** | https://coinmarketcap.com/api/agent |
+- [x] Velocity index + regime classifier
+- [x] Market-neutral signal rules (entry / exit / sizing)
+- [x] Conviction layer (regime + Fear & Greed)
+- [x] 2.5-year backtest — 20/20 crash capture
+- [x] Honest fee disclosure (failing test kept in repo)
+- [x] Live CMC signal path (`cmc_live.py`)
+- [x] RAG knowledge agent (BM25 + DeepSeek V4 Flash)
+- [x] Live Vercel demo
+- [ ] Liquidity-weighted Pulse index
+- [ ] Derivatives/funding confirmation layer
+- [ ] Multi-basket presets (majors / DeFi / memes)
 
 ---
 
@@ -306,7 +368,7 @@ pulse/
 
 **Built for BNB Hack: AI Trading Agent Edition** · CoinMarketCap × Trust Wallet × BNB Chain
 
-🫀 [Live demo](https://pulse-vix.vercel.app) · 📦 [Install](#-install-in-one-line) · 📚 [Docs](docs/)
+🫀 [Live demo](https://pulse-vix.vercel.app) · 💬 [Ask the Skill](https://pulse-agent.187.127.137.136.sslip.io) · 📚 [Docs](docs/)
 
 ### License
 MIT — see [LICENSE](LICENSE).
