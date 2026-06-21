@@ -8,6 +8,7 @@
 <meta property="og:title" content="Pulse — the heartbeat of the crypto market" />
 <meta property="og:description" content="Fear & Greed tells you the crowd's mood. Pulse tells you the crowd's speed." />
 <meta name="theme-color" content="#F2EFE6" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet" />
@@ -69,6 +70,7 @@ tailwind.config = { theme:{ extend:{
     <div class="hidden sm:flex items-center gap-5 brack text-ink/45">
       <a href="#live" class="hover:text-ink spring">Live</a><a href="#proof" class="hover:text-ink spring">Proof</a>
       <a href="#record" class="hover:text-ink spring">Record</a><a href="#method" class="hover:text-ink spring">Method</a>
+      <a href="#loops" class="hover:text-ink spring">Loops</a>
     </div>
     <a href="/dashboard" class="group flex items-center gap-2 rounded-full bg-ink text-bone brack pl-4 pr-4 py-2 spring active:scale-[0.98] hover:bg-signal"><span class="w-1.5 h-1.5 rounded-full bg-signal beat"></span>Dashboard
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="spring group-hover:translate-x-0.5"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
@@ -83,7 +85,8 @@ tailwind.config = { theme:{ extend:{
   <a href="#proof"   data-sec="proof"   class="chap text-ink/25 spring">03 — Proof</a>
   <a href="#record"  data-sec="record"  class="chap text-ink/25 spring">04 — Record</a>
   <a href="#method"  data-sec="method"  class="chap text-ink/25 spring">05 — Method</a>
-  <a href="#install" data-sec="install" class="chap text-ink/25 spring">06 — Install</a>
+  <a href="#loops"   data-sec="loops"   class="chap text-ink/25 spring">06 — Loops</a>
+  <a href="#install" data-sec="install" class="chap text-ink/25 spring">07 — Install</a>
 </div>
 
 <main id="top">
@@ -224,22 +227,58 @@ tailwind.config = { theme:{ extend:{
     </div>
   </section>
 
+  <!-- LOOPS -->
+  <section id="loops" class="wrap rule pt-16 md:pt-24 pb-16 md:pb-24">
+    <div class="reveal flex items-baseline gap-5 mb-4"><span class="ghost text-5xl md:text-7xl">06</span><h2 class="editorial text-4xl md:text-6xl">it can run itself.</h2></div>
+    <p class="reveal text-ash max-w-2xl mb-10 leading-relaxed">Ask once, and the agent runs Pulse as a <span class="text-ink font-600">closed loop</span> — poll the regime, act only when the gate clears, exit on a defined condition. It self-paces between ticks without asking again. <span class="text-ink/70">User-started, read-only — no wallet, no signing, no on-chain execution.</span></p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="reveal rounded-[1.4rem] card p-8">
+        <div class="flex items-center justify-between"><div class="mono text-ink/20 text-3xl font-700">01</div><span class="brack text-calm">watch</span></div>
+        <h3 class="editorial text-2xl mt-5">regime watch</h3>
+        <div class="mt-5 flex flex-col gap-3.5">
+          <div><span class="brack text-ash">trigger</span><p class="text-ink/80 mt-1 text-[14px] leading-relaxed">every ~15m, poll the live heartbeat.</p></div>
+          <div><span class="brack text-ash">gate</span><p class="text-ink/80 mt-1 text-[14px] leading-relaxed">alert only on regime change <span class="text-ink">+</span> HIGH conviction.</p></div>
+          <div><span class="brack text-ash">exit</span><p class="text-ink/80 mt-1 text-[14px] leading-relaxed">always-on monitor; tighten to 5m in panic.</p></div>
+        </div>
+      </div>
+      <div class="reveal rounded-[1.4rem] card p-8" data-d="1">
+        <div class="flex items-center justify-between"><div class="mono text-ink/20 text-3xl font-700">02</div><span class="brack text-signal">trade</span></div>
+        <h3 class="editorial text-2xl mt-5">trade lifecycle</h3>
+        <div class="mt-5 flex flex-col gap-3.5">
+          <div><span class="brack text-ash">trigger</span><p class="text-ink/80 mt-1 text-[14px] leading-relaxed">a HIGH-conviction panic / euphoria alert.</p></div>
+          <div><span class="brack text-ash">gate</span><p class="text-ink/80 mt-1 text-[14px] leading-relaxed">hold the basket while the position is open.</p></div>
+          <div><span class="brack text-ash">exit</span><p class="text-ink/80 mt-1 text-[14px] leading-relaxed">3h elapsed · stop −5% · TP +6% · regime calms.</p></div>
+        </div>
+      </div>
+      <div class="reveal rounded-[1.4rem] card p-8" data-d="2">
+        <div class="flex items-center justify-between"><div class="mono text-ink/20 text-3xl font-700">03</div><span class="brack text-euph">confirm</span></div>
+        <h3 class="editorial text-2xl mt-5">conviction gate</h3>
+        <div class="mt-5 flex flex-col gap-3.5">
+          <div><span class="brack text-ash">trigger</span><p class="text-ink/80 mt-1 text-[14px] leading-relaxed">a signal exists but isn't HIGH yet.</p></div>
+          <div><span class="brack text-ash">gate</span><p class="text-ink/80 mt-1 text-[14px] leading-relaxed">promote only if ≥2 agree: velocity · F&amp;G · social.</p></div>
+          <div><span class="brack text-ash">exit</span><p class="text-ink/80 mt-1 text-[14px] leading-relaxed">confirmed → trade, else stand aside. max 3 tries.</p></div>
+        </div>
+      </div>
+    </div>
+    <p class="reveal mono text-[12px] text-ink/35 mt-7">Every loop carries a mandatory exit — the agent always terminates. "Act" emits a spec; it never executes on-chain.</p>
+  </section>
+
   <!-- INSTALL -->
   <section id="install" class="wrap rule pt-16 md:pt-24 pb-14">
-    <div class="reveal flex items-baseline gap-5 mb-10"><span class="ghost text-5xl md:text-7xl">06</span><h2 class="editorial text-4xl md:text-6xl">install in one line.</h2></div>
+    <div class="reveal flex items-baseline gap-5 mb-10"><span class="ghost text-5xl md:text-7xl">07</span><h2 class="editorial text-4xl md:text-6xl">install in one line.</h2></div>
     <div class="reveal rounded-[1.4rem] overflow-hidden border border-ink/10">
       <div class="bg-ink text-bone p-8 md:p-10 mono text-[14px] md:text-[15px]">
         <div class="text-bone/40 mb-2"># install across 16 agent platforms</div>
-        <div class="text-signal mb-6 break-all">npx skills add https://github.com/Venkat5599/capSkills -y</div>
+        <div class="text-signal mb-6 break-all">npx skills add https://github.com/Venkat5599/Pulse -y</div>
         <div class="text-bone/40 mb-2"># then ask your agent</div>
         <div class="text-bone">"What's the crypto market regime right now?"</div>
       </div>
     </div>
     <div class="reveal mt-7 flex flex-wrap gap-7 items-center">
-      <a href="https://github.com/Venkat5599/capSkills" target="_blank" rel="noopener" class="group flex items-center gap-2.5 rounded-full bg-ink text-bone brack pl-5 pr-5 py-3 spring active:scale-[0.98] hover:bg-signal">View the repo
+      <a href="https://github.com/Venkat5599/Pulse" target="_blank" rel="noopener" class="group flex items-center gap-2.5 rounded-full bg-ink text-bone brack pl-5 pr-5 py-3 spring active:scale-[0.98] hover:bg-signal">View the repo
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" class="spring group-hover:translate-x-1"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
       </a>
-      <a href="https://github.com/Venkat5599/capSkills/tree/main/docs" target="_blank" rel="noopener" class="brack text-ink/70 hover:text-ink link-line">Read the docs</a>
+      <a href="https://github.com/Venkat5599/Pulse/tree/main/docs" target="_blank" rel="noopener" class="brack text-ink/70 hover:text-ink link-line">Read the docs</a>
     </div>
     <div class="mt-16 flex flex-wrap items-center justify-between gap-4 text-ink/40 brack border-t border-ink/10 pt-8">
       <span class="mono font-700 text-ink/70 flex items-center gap-2 text-[14px] tracking-normal normal-case"><span class="w-2 h-2 rounded-full bg-signal beat"></span>PULSE</span>
@@ -264,7 +303,7 @@ const revealAll=()=>document.querySelectorAll('.reveal').forEach(el=>el.classLis
 if(matchMedia('(prefers-reduced-motion: reduce)').matches) revealAll();
 setTimeout(revealAll,3000);   // safety: never leave content stuck invisible
 const chapIO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.chap').forEach(c=>{c.classList.remove('text-ink');c.classList.add('text-ink/25');});const a=document.querySelector('.chap[data-sec="'+e.target.id+'"]');if(a){a.classList.add('text-ink');a.classList.remove('text-ink/25');}}}),{threshold:0.4});
-document.querySelectorAll('main [id]').forEach(s=>{if(['top','live','proof','record','method','install'].includes(s.id))chapIO.observe(s);});
+document.querySelectorAll('main [id]').forEach(s=>{if(['top','live','proof','record','method','loops','install'].includes(s.id))chapIO.observe(s);});
 
 function dpi(cv,h){const r=devicePixelRatio||1;const w=cv.clientWidth;cv.width=w*r;cv.height=h*r;const c=cv.getContext('2d');c.scale(r,r);return{c,w,h};}
 function drawEKG(cv,series,thr){const{c,w,h}=dpi(cv,200);const max=Math.max(...series.map(s=>s.pulse),thr*1.4);

@@ -36,7 +36,7 @@ never decides the trade. This also makes it prompt-injection-safe.
 
 ### "Can I run it right now?"
 ```bash
-npx skills add https://github.com/Venkat5599/capSkills -y
+npx skills add https://github.com/Venkat5599/Pulse -y
 export CMC_API_KEY=your_free_key
 python scripts/cmc_live.py
 ```

@@ -27,7 +27,7 @@ export CMC_API_KEY=your_key_here      # get one free at pro.coinmarketcap.com
 pip install -r requirements.txt
 python scripts/cmc_live.py            # -> live regime + signal JSON
 ```
-Live demo: https://pulse-vix.vercel.app · Repo: https://github.com/Venkat5599/capSkills
+Live demo: https://pulse-vix.vercel.app · Repo: https://github.com/Venkat5599/Pulse
 
 ## What this Skill does
 
@@ -120,6 +120,42 @@ CMC-native.
 For a richer live read, an agent with the **agent-reach** skill can also search
 X/Twitter ("search crypto panic/fear on twitter") to corroborate the regime.
 Shown in the demo; not hard-wired (free social scrapers are rate-limited).
+
+## Closed-loop agent workflows
+
+Pulse isn't only a one-shot signal — an agent can run it as a **self-pacing closed
+loop**: poll the regime, act only when a feedback gate clears, and exit on a defined
+condition. Each loop below is `trigger → act → feedback gate → exit`. The agent keeps
+looping until its exit condition fires; it does not ask the user between ticks.
+
+### Loop 1 — Regime watch (always-on monitor)
+- **Trigger:** every N minutes (default 15) call `/api/heartbeat` (or `cmc_live.py`).
+- **Act:** classify CALM / PANIC / EUPHORIA from the live Pulse index.
+- **Feedback gate:** only emit an alert when `regime != last_regime` **and**
+  `conviction.grade == HIGH` (regime + Fear & Greed agree). Suppress duplicates.
+- **Exit:** never auto-exits — long-running watcher. Stops on user halt or market close.
+- **Self-pace:** CALM → widen interval (30m); PANIC/EUPHORIA → tighten (5m).
+
+### Loop 2 — Trade lifecycle (entry → manage → exit)
+- **Trigger:** Loop 1 fires a HIGH-conviction PANIC or EUPHORIA alert.
+- **Act:** open the market-neutral basket (5 picks, equal weight) per the signal.
+- **Feedback gate (per tick):** re-poll heartbeat; hold while position is open and
+  none of the exits below are hit.
+- **Exit (any one):** `hold_hours` (3h) elapsed · stop −5% · take-profit +6% ·
+  regime reverts to CALM. On exit → flatten, log result, return to Loop 1.
+
+### Loop 3 — Conviction confirmation (gate before risk)
+- **Trigger:** a candidate signal exists but `conviction.grade != HIGH`.
+- **Act:** gather corroboration — CMC Fear & Greed delta, and optionally
+  **agent-reach** X/Twitter sentiment search.
+- **Feedback gate:** promote to HIGH only if ≥2 independent inputs agree
+  (velocity + fear/greed + social). Otherwise size down or wait.
+- **Exit:** resolves to `confirmed` (→ Loop 2) or `stand_aside` (→ Loop 1), max 3
+  retries then default to stand-aside. No infinite loop.
+
+> **Safety:** every loop is read-only signal generation — no wallet, no signing.
+> "Act" means emit/track a spec, never execute on-chain. Exit conditions are
+> mandatory so an agent always terminates a position-tracking loop.
 
 ## How to run
 
